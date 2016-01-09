@@ -202,7 +202,7 @@ for (var i = 0; i < routes.length; i++) {
 
 co(function* () {
 	var len = yield clientCo.llen("routeData");
-	if (true || len != totalLength) {
+	if (len != totalLength) {
 		yield clientCo.del("lastUpdateTime");
 		yield clientCo.del("routeData");
 		for (var j = 0; j < totalLength; j++) {
