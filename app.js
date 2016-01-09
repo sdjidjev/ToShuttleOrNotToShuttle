@@ -162,18 +162,19 @@ function updateSingleDuration(index, printTime, rDate, route, time, leg, collect
 }
 
 function updateAllDurations() {
-	var date = new Date();
-	if (date.getHours() >= UPDATE_START_HOUR && date.getHours() <= UPDATE_END_HOUR) {
-		client.get("lastUpdateTime", function(err, lastUpdateTime) {
-			var now = Date.now();
-			if (lastUpdateTime == null || now - Number(lastUpdateTime) > 15*MS_IN_MINUTE) {
-				request(
-					"https://maps.googleapis.com/maps/api/timezone/json?location=37,-122&timestamp="+Date.now()/1000+"&key="+mapsApiKey,
-					function(error, response, body) {
-						if (!error && response.statusCode == 200) {
-							var parsedBody = JSON.parse(body);
-						  	if (parsedBody.status == "OK") {
-						  		var timezoneOffset = parsedBody.rawOffset * 1000;
+	request(
+		"https://maps.googleapis.com/maps/api/timezone/json?location=37,-122&timestamp="+Date.now()/1000+"&key="+mapsApiKey,
+		function(error, response, body) {
+			if (!error && response.statusCode == 200) {
+				var parsedBody = JSON.parse(body);
+			  	if (parsedBody.status == "OK") {
+			  		var timezoneOffset = parsedBody.rawOffset * 1000;
+					var date = new Date(Date.now() + timezoneOffset);
+					console.log(date.getUTCHours());
+					if (date.getUTCHours() >= UPDATE_START_HOUR && date.getUTCHours() <= UPDATE_END_HOUR) {
+						client.get("lastUpdateTime", function(err, lastUpdateTime) {
+							var now = Date.now();
+							if (lastUpdateTime == null || now - Number(lastUpdateTime) > 15*MS_IN_MINUTE) {
 						  		console.log(timezoneOffset);
 								var offset = 0;
 								for (var i = 0; i < routes.length; i++) {
@@ -183,11 +184,11 @@ function updateAllDurations() {
 								client.set("lastUpdateTime", now);
 								console.log("updating...");
 							}
-						}
-					});
+						});
+					}
+				}
 			}
 		});
-	}
 }
 
 function startUpdateLoop() {
