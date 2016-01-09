@@ -219,7 +219,12 @@ var template = swig.compileFile(path.join(__dirname, '/views/index.html'));
 app.use(function *(){
 	var routes = yield clientCo.lrange("routeData", 0, -1);
 	for (var i = 0; i < routes.length; i++) {
-		routes[i] = JSON.parse(routes[i]);
+		try {
+			var parsedJSON = JSON.parse(routes[i]);
+			routes[i] = parsedJSON;
+		} catch (e) {
+			// do nothing
+		}
 	}
 	var lastUpdateTime = yield clientCo.get("lastUpdateTime");
 	this.body = template({
