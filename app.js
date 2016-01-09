@@ -137,7 +137,6 @@ function updateSingleDuration(index, printTime, rDate, route, time, leg, collect
 		function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
 		  	var parsedBody = JSON.parse(body);
-		  	console.log(parsedBody);
 		  	if (parsedBody.status == "OK") {
 		  		var duration = 0;
 		  		var diffDuration = 0;
@@ -170,12 +169,10 @@ function updateAllDurations() {
 			  	if (parsedBody.status == "OK") {
 			  		var timezoneOffset = parsedBody.rawOffset * 1000;
 					var date = new Date(Date.now() + timezoneOffset);
-					console.log(date.getUTCHours());
 					if (date.getUTCHours() >= UPDATE_START_HOUR && date.getUTCHours() <= UPDATE_END_HOUR) {
 						client.get("lastUpdateTime", function(err, lastUpdateTime) {
 							var now = Date.now();
 							if (lastUpdateTime == null || now - Number(lastUpdateTime) > 15*MS_IN_MINUTE) {
-						  		console.log(timezoneOffset);
 								var offset = 0;
 								for (var i = 0; i < routes.length; i++) {
 									updateDurations(routes[i], offset, timezoneOffset);
@@ -219,7 +216,6 @@ var template = swig.compileFile(path.join(__dirname, '/views/index.html'));
 
 app.use(function *(){
 	var routes = yield clientCo.lrange("routeData", 0, -1);
-	console.log(routes);
 	for (var i = 0; i < routes.length; i++) {
 		try {
 			var parsedJSON = JSON.parse(routes[i]);
