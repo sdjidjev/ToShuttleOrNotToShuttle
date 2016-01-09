@@ -11,6 +11,13 @@ var MS_IN_MINUTE = 60000;
 var UPDATE_START_HOUR = 14;
 var UPDATE_END_HOUR = 20;
 
+var mapsApiKey;
+if (process.env.MAPS_API_KEY) {
+	mapsApiKey = JSON.parse(process.env.MAPS_API_KEY);
+} else {
+	mapsApiKey = require('./config.json').mapsApiKey;
+}
+
 var locations = {
 	work14: "1+Hacker+Way+Menlo+Park+CA",
 	fremont: "2000+Bart+Way+Fremont+CA",
@@ -82,7 +89,6 @@ var routes = [
 ]
 
 var baseApiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?";
-var apiKey = "AIzaSyBhJ5Q4MKSCBetsTm1hjJUwPZxzIi3qCno";
 
 // Set up Heroku Redis
 var client;
@@ -128,7 +134,7 @@ function updateDurations(route, offset, timezoneOffset) {
 function updateSingleDuration(index, printTime, rDate, route, time, leg, collectiveDuration, collectiveDiffDuration) {
 	var rTime = Math.floor(rDate.getTime()/1000);
 	request(
-		baseApiUrl+"origins="+route.legs[leg][0]+"&destinations="+route.legs[leg][1]+"&mode="+route.legs[leg][2]+"&departure_time="+rTime+"&units=imperial&key="+apiKey,
+		baseApiUrl+"origins="+route.legs[leg][0]+"&destinations="+route.legs[leg][1]+"&mode="+route.legs[leg][2]+"&departure_time="+rTime+"&units=imperial&key="+mapsApiKey,
 		function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
 		  	var parsedBody = JSON.parse(body);
@@ -162,7 +168,7 @@ function updateAllDurations() {
 			var now = Date.now();
 			if (lastUpdateTime == null || now - Number(lastUpdateTime) > 15*MS_IN_MINUTE) {
 				request(
-					"https://maps.googleapis.com/maps/api/timezone/json?location=37,-122&timestamp="+Date.now()/1000+"&key="+apiKey,
+					"https://maps.googleapis.com/maps/api/timezone/json?location=37,-122&timestamp="+Date.now()/1000+"&key="+mapsApiKey,
 					function(error, response, body) {
 						if (!error && response.statusCode == 200) {
 							var parsedBody = JSON.parse(body);
@@ -197,7 +203,7 @@ for (var i = 0; i < routes.length; i++) {
 
 co(function* () {
 	var len = yield clientCo.llen("routeData");
-	if (true || len != totalLength) {
+	if (len != totalLength) {
 		yield clientCo.del("lastUpdateTime");
 		yield clientCo.del("routeData");
 		for (var j = 0; j < totalLength; j++) {
