@@ -94,9 +94,7 @@ var baseApiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?";
 // Set up Heroku Redis
 var client;
 if (process.env.REDIS_URL) {
-  var redisURL = url.parse(process.env.REDIS_URL);
-  client = redis.createClient(redisURL.port, redisURL.hostname);
-  client.auth(redisURL.auth.split(":")[1]);
+  client = redis.createClient(process.env.REDIS_URL);
 } else {
   client = redis.createClient();
 }
