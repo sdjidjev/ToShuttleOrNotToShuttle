@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>To Shuttle Or Not To Shuttle</title>
+	<style type="text/css">
+	body {
+		font-family: arial;
+	}
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 10px;
+	}
+	li {
+		margin: 0;
+		padding: 10px;
+	}
+	h1,h2 {
+		text-align: center;
+	}
+	.Oakland {
+		background-color: #33CED1;
+	}
+	.Fremont {
+		background-color: #B6D051;
+	}
+	</style>
+</head>
+<body>
+	<h1>To Shuttle Or Not To Shuttle</h1>
+	<h2>Updated {{minutesAgo}} min ago</h2>
+	<ul>
+	{% for route in routes %}
+		<li class="{{route[1]}}">{{route[0]}} ({{route[1]}}) - {{route[2]}} - {{route[4]}} min, {% if route[5] > 0 %}+{% endif %}{{route[5]}} min</li>
+	{% endfor %}
+	</ul>
+</body>
+</html>

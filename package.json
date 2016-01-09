@@ -1,0 +1,19 @@
+{
+  "name": "ToShuttleOrNotToShuttle",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "co": "4.x",
+    "koa": "1.x",
+    "request": "2.x",
+    "redis": "2.x",
+    "co-redis": "2.x",
+    "swig": "1.x"
+  },
+  "engines": {
+    "node": "5.x",
+    "npm": "3.x"
+  }
+}
