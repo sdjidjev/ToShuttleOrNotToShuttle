@@ -11,7 +11,8 @@
     "request": "2.x",
     "redis": "2.x",
     "co-redis": "2.x",
-    "swig": "1.x"
+    "swig": "1.x",
+    "ping": "0.x"
   },
   "engines": {
     "node": "5.x",
