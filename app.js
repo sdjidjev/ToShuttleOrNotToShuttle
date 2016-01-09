@@ -5,6 +5,7 @@ var swig = require('swig');
 var request = require('request');
 var redis = require('redis');
 var wrapper = require('co-redis');
+var serve = require('koa-static');
 var koa = require('koa');
 var app = koa();
 
@@ -213,6 +214,8 @@ co(function* () {
 });
 
 var template = swig.compileFile(path.join(__dirname, '/views/index.html'));
+
+app.use(serve(path.join(__dirname, '/static')));
 
 app.use(function *(){
 	var routes = yield clientCo.lrange("routeData", 0, -1);
