@@ -1,5 +1,6 @@
 var co = require('co');
 var path = require('path');
+var url = require('url');
 var swig = require('swig');
 var request = require('request');
 var redis = require('redis');
