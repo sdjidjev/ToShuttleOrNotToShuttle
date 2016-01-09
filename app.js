@@ -13,7 +13,7 @@ var UPDATE_END_HOUR = 20;
 
 var mapsApiKey;
 if (process.env.MAPS_API_KEY) {
-	mapsApiKey = JSON.parse(process.env.MAPS_API_KEY);
+	mapsApiKey = process.env.MAPS_API_KEY;
 } else {
 	mapsApiKey = require('./config.json').mapsApiKey;
 }
