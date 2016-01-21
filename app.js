@@ -10,7 +10,7 @@ var koa = require('koa');
 var app = koa();
 
 var MS_IN_MINUTE = 60000;
-var UPDATE_START_HOUR = 14;
+var UPDATE_START_HOUR = 10;
 var UPDATE_END_HOUR = 20;
 
 var mapsApiKey;
