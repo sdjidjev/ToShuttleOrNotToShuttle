@@ -189,13 +189,6 @@ function updateAllDurations() {
 		});
 }
 
-function startUpdateLoop() {
-	setInterval(function() {
-		updateAllDurations();
-	}, 15*MS_IN_MINUTE);
-	updateAllDurations();
-}
-
 var totalLength = 0;
 for (var i = 0; i < routes.length; i++) {
 	totalLength += routes[i].times.length;
@@ -209,8 +202,8 @@ co(function* () {
 		for (var j = 0; j < totalLength; j++) {
 			yield clientCo.rpush("routeData", "");
 		}
-		startUpdateLoop();
 	}
+	updateAllDurations();
 });
 
 var template = swig.compileFile(path.join(__dirname, '/views/index.html'));
@@ -218,6 +211,7 @@ var template = swig.compileFile(path.join(__dirname, '/views/index.html'));
 app.use(serve(path.join(__dirname, '/static')));
 
 app.use(function *(){
+	updateAllDurations();
 	var routes = yield clientCo.lrange("routeData", 0, -1);
 	for (var i = 0; i < routes.length; i++) {
 		try {
