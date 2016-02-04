@@ -7,13 +7,19 @@
 		font-family: arial;
 	}
 	ul {
+		left: 50%;
 		list-style-type: none;
-		margin: 0;
 		padding: 10px;
+		position: absolute;
+		white-space: nowrap;
+		width: auto;
 	}
 	li {
-		margin: 0;
-		padding: 10px;
+		left: -50%;
+		margin: auto;
+		padding: 13px;
+		position: relative;
+		text-align: center;
 	}
 	h1,h2 {
 		text-align: center;
@@ -22,7 +28,7 @@
 		background-color: #33CED1;
 	}
 	.Fremont {
-		background-color: #B6D051;
+		background-color: #92E2A8;
 	}
 	</style>
 </head>
@@ -31,7 +37,7 @@
 	<h2>Updated {{minutesAgo}} min ago</h2>
 	<ul>
 	{% for route in routes %}
-		<li class="{{route[1]}}">{{route[0]}} ({{route[1]}}) - {{route[2]}} - {{route[3]}} min, {% if route[4] > 0 %}+{% endif %}{{route[4]}} min</li>
+		<li class="{{route[1]}}">{{route[0]}} ({{route[1]}}) - {{route[2]}} - {{route[3]}} min, {% if route[4] > 0 %}+{% endif %}{{route[4]}} min. ETA: {{route[5]}}</li>
 	{% endfor %}
 	</ul>
 </body>

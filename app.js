@@ -25,7 +25,7 @@ var locations = {
 	fremont: "2000+Bart+Way+Fremont+CA",
 	oakland: "12th+St.+Oakland+City+Center+Oakland+CA",
 	berkeley: "1945+Milvia+St+Berkeley+CA"
-}
+};
 
 var routes = [
 	{
@@ -88,7 +88,7 @@ var routes = [
 			}
 		]
 	}
-]
+];
 
 var baseApiUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?";
 
@@ -126,13 +126,16 @@ function updateDurations(route, offset, timezoneOffset) {
 			d = new Date(d.getTime() + 24*60*60*1000);
 		}
 		var printTime = pad(d.getUTCHours(),2)+":"+pad(d.getUTCMinutes(),2)+" "+d.getUTCFullYear()+"/"+pad(d.getUTCMonth()+1, 2)+"/"+pad(d.getUTCDate(), 2);
-		var rDate = new Date(d.getTime() - timezoneOffset + time.addTime*MS_IN_MINUTE)
+		var rDate = new Date(d.getTime() - timezoneOffset + time.addTime*MS_IN_MINUTE);
 		updateSingleDuration(offset+index, printTime, rDate, route, time, 0, 0, 0);
 	});
 }
 
 function updateSingleDuration(index, printTime, rDate, route, time, leg, collectiveDuration, collectiveDiffDuration) {
 	var rTime = Math.floor(rDate.getTime()/1000);
+	var eta = new Date();
+	eta.setHours(time.hour);
+	eta.setMinutes(time.minute);
 	request(
 		baseApiUrl+"origins="+route.legs[leg][0]+"&destinations="+route.legs[leg][1]+"&mode="+route.legs[leg][2]+"&departure_time="+rTime+"&units=imperial&key="+mapsApiKey,
 		function (error, response, body) {
@@ -150,12 +153,13 @@ function updateSingleDuration(index, printTime, rDate, route, time, leg, collect
 		  		if (leg == route.legs.length - 1) {
 		  			var totalDuration = collectiveDuration + duration + time.addTime*60;
 		  			var totalDiffDuration = collectiveDiffDuration + diffDuration;
-		  			setData(index, [time.name, route.name, printTime, Math.round(totalDuration/60), Math.round(totalDiffDuration/60)]);
+		  			eta = new Date(eta.getTime() + totalDuration*1000);
+		  			setData(index, [time.name, route.name, printTime, Math.round(totalDuration/60), Math.round(totalDiffDuration/60), String(eta.getHours())+":"+String(eta.getMinutes())]);
 		  		} else {
 		  			updateSingleDuration(index, printTime, new Date(rDate.getTime() + duration), route, time, leg+1, collectiveDuration + duration, collectiveDiffDuration + diffDuration);
 		  		}
 			} else {
-				setData(index, [time.name, route.name, printTime, 0, 0]);
+				setData(index, [time.name, route.name, printTime, 0, 0, printTime]);
 			}
 		  }
 		});
